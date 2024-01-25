@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_node_store/utils/app_route.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 
 class WelcomeScreen extends StatefulWidget {
@@ -17,6 +18,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     // Navigator.of(context).pushReplacement(
     //   MaterialPageRoute(builder: (_) => const HomePage()),
     // );
+    // ไปหน้า Login โดยการเปิดซ้อนหนเาเดิม
+    //Navigator.pushNamed(context, AppRouter.login);
+    // ไปหน้า Login
+    Navigator.pushReplacementNamed(context, AppRouter.login);
   }
 
   Widget _buildImage(String assetName, [double width = 350]) {
