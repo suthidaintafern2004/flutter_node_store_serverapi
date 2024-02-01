@@ -78,6 +78,7 @@ class LoginForm extends StatelessWidget {
                     InkWell(
                       onTap: () {
                         //Open Forgot password screen here
+                        Navigator.pushNamed(context, AppRouter.forgotPassword);
                       },
                       child: const Text("ลืมรหัสผ่าน ?"),
                     )
