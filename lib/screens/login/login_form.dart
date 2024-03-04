@@ -1,19 +1,24 @@
-// ignore_for_file: unused_field
+// ignore_for_file: unused_field, must_be_immutable, use_build_context_synchronously
+
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_node_store/app_router.dart';
 import 'package:flutter_node_store/components/custom_textfield.dart';
 import 'package:flutter_node_store/components/rounded_button.dart';
 import 'package:flutter_node_store/components/social_media_options.dart';
-import 'package:flutter_node_store/utils/app_route.dart';
+import 'package:flutter_node_store/services/rest_api.dart';
+import 'package:flutter_node_store/utils/utility.dart';
 
 class LoginForm extends StatelessWidget {
-  LoginForm({super.key});
+  LoginForm({Key? key}) : super(key: key);
 
   // สร้าง GlobalKey สำหรับ Form นี้
   final _formKeyLogin = GlobalKey<FormState>();
 
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
+  // สร้าง TextEditingController
+  final _emailController = TextEditingController(text: 'samit@email.com');
+  final _passwordController = TextEditingController(text: '123456');
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +39,7 @@ class LoginForm extends StatelessWidget {
           Form(
               key: _formKeyLogin,
               child: Column(children: [
-                 customTextField(
+                customTextField(
                   controller: _emailController,
                   hintText: "Email",
                   prefixIcon: const Icon(Icons.email),
@@ -48,9 +53,6 @@ class LoginForm extends StatelessWidget {
                     }
                     return null;
                   },
-                ),
-                const SizedBox(
-                  height: 10,
                 ),
                 const SizedBox(
                   height: 10,
@@ -89,7 +91,7 @@ class LoginForm extends StatelessWidget {
                 ),
                 RoundedButton(
                     label: "LOGIN",
-                    onPressed: () {
+                    onPressed: () async {
 
                       // ตรวจสอบข้อมูลฟอร์ม
                       if (_formKeyLogin.currentState!.validate()) {
@@ -98,8 +100,45 @@ class LoginForm extends StatelessWidget {
                         _formKeyLogin.currentState!.save();
                         
                         // แสดงข้อมูลที่บันทึกใน Console
-                        print("Email: ${_emailController.text}");
-                        print("Password: ${_passwordController.text}");
+                        // print("Email: ${_emailController.text}");
+                        // print("Password: ${_passwordController.text}");
+
+                        // ส่งข้อมูลไปยัง API เพื่อทำการตรวจสอบ
+                        var response = await CallAPI().loginAPI(
+                          {
+                            "email": _emailController.text,
+                            "password": _passwordController.text
+                          }
+                        );
+
+                        // ตรวจสอบค่าที่ได้จาก API
+                        var body = jsonDecode(response);
+
+                        Utility().logger.i(body);
+
+                        if (body["message"] == "No Network Connection") {
+                          // แจ้งเตือนว่าไม่มีการเชื่อมต่อ Internet
+                          Utility.showAlertDialog(context, '', '${body["message"]}');
+                        } else {
+                          if (body["status"] == "ok") {
+                            
+                            // แจ้งเตือนว่าเข้าสู่ระบบสำเร็จ
+                            Utility.showAlertDialog(context, body["status"], '${body["message"]}');
+
+                            // บันทึกข้อมูลลงในตัวแปร SharedPreferences
+                            await Utility.setSharedPreference('loginStatus', true);
+                            await Utility.setSharedPreference('token', body["token"]);
+                            await Utility.setSharedPreference('user', body["user"]);
+
+                            // ส่งไปหน้า Dashboard
+                            Navigator.pushReplacementNamed(context, AppRouter.dashboard);
+
+                          }else{
+                            // แจ้งเตือนว่าเข้าสู่ระบบไม่สำเร็จ
+                            Utility.showAlertDialog(context, body["status"], '${body["message"]}');
+                          }
+                        }
+
                       }
 
                     })
@@ -107,7 +146,7 @@ class LoginForm extends StatelessWidget {
           const SizedBox(
             height: 10,
           ),
-          const SocialMediaOPtions(),
+          const SocialMediaOptions(),
           const SizedBox(
             height: 30,
           ),
@@ -121,7 +160,7 @@ class LoginForm extends StatelessWidget {
                   Navigator.pushReplacementNamed(context, AppRouter.register);
                 },
                 child: const Text(
-                  "สมัครฟรี",
+                  "สมัครสมาชิก",
                   style: TextStyle(
                     color: Colors.blue,
                     fontWeight: FontWeight.bold,

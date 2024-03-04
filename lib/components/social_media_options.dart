@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class SocialMediaOPtions extends StatelessWidget {
-  const SocialMediaOPtions({super.key});
+class SocialMediaOptions extends StatelessWidget {
+  const SocialMediaOptions({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -7,7 +7,7 @@ import 'package:flutter_node_store/screens/register/register_form.dart';
 class RegisterScreen extends StatelessWidget {
   const RegisterScreen({super.key});
 
-  @override
+   @override
   Widget build(BuildContext context) {
     return ResponsiveLayout(
         webChild: WebLayout(

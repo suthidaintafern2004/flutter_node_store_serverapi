@@ -5,7 +5,7 @@ import 'package:flutter_node_store/components/web_layout.dart';
 import 'package:flutter_node_store/screens/forgotpassword/forgot_password_form.dart';
 
 class ForgotPasswordScreen extends StatelessWidget {
-  const ForgotPasswordScreen({super.key});
+  const ForgotPasswordScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

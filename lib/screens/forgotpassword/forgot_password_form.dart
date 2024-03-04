@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_node_store/app_router.dart';
 import 'package:flutter_node_store/components/custom_textfield.dart';
 import 'package:flutter_node_store/components/rounded_button.dart';
-import 'package:flutter_node_store/utils/app_route.dart';
 
 class ForgotPasswordForm extends StatelessWidget {
   ForgotPasswordForm({super.key});
@@ -88,7 +88,7 @@ class ForgotPasswordForm extends StatelessWidget {
               InkWell(
                 onTap: () {
                   // ไปหน้า Register
-                  Navigator.pushReplacementNamed(context, AppRouter.forgotPassword);
+                  Navigator.pushReplacementNamed(context, AppRouter.register);
                 },
                 child: const Text(
                   "สมัครสมาชิก",

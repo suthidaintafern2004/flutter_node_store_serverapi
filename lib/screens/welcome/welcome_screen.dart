@@ -1,9 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_node_store/utils/app_route.dart';
+import 'package:flutter_node_store/app_router.dart';
+import 'package:flutter_node_store/utils/utility.dart';
 import 'package:introduction_screen/introduction_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -13,34 +14,33 @@ class WelcomeScreen extends StatefulWidget {
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
+  
   final introKey = GlobalKey<IntroductionScreenState>();
 
+  // ฟังก์ชันเมื่อจบการแสดง Intro
   void _onIntroEnd(context) async {
 
     // Set ค่าให้กับ SharedPreferences เพื่อบอกว่าเคยแสดง Intro แล้ว
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool('welcomeStatus', true);
-    // Navigator.of(context).pushReplacement(
-    //   MaterialPageRoute(builder: (_) => const HomePage()),
-    // );
-    // ไปหน้า Login โดยการเปิดซ้อนหนเาเดิม
-    //Navigator.pushNamed(context, AppRouter.login);
-    // ไปหน้า Login
-    Navigator.pushReplacementNamed(context, AppRouter.login);
+    await Utility.setSharedPreference('welcomeStatus', true);
+
+    // ไปยังหน้า Login แบบเปิดซ้อนทับหน้าเดิม
+    // Navigator.pushNamed(context, AppRouter.login);
+
+    // ไปยังหน้า Login แบบเปิดแบบไม่มีปุ่มย้อนกลับ แทนที่หน้าเดิม
+    Navigator.pushReplacementNamed(context, AppRouter.login); // เปิดแบบไม่มีปุ่มย้อนกลับ
+
   }
 
+  // ฟังก์ชันกำหนดภาพที่ใช้แสดงใน Intro
   Widget _buildImage(String assetName, [double width = 350]) {
-    return Image.asset(
-      'assets/images/$assetName',
-      width: width,
-    );
+    return Image.asset('assets/images/$assetName', width: width);
   }
-
+  
   @override
   Widget build(BuildContext context) {
-    // display vertical
+
+    // กำหนดให้แสดงผลเฉพาะหน้าจอแนวตั้ง
     SystemChrome.setPreferredOrientations([
-      // display horizontal
       // DeviceOrientation.portraitUp,
       // DeviceOrientation.landscapeLeft,
       // DeviceOrientation.landscapeRight,
@@ -127,5 +127,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         ),
       ),
     );
+
   }
 }

@@ -1,9 +1,12 @@
-// ignore_for_file: unused_field
+// ignore_for_file: use_build_context_synchronously, prefer_const_constructors
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_node_store/app_router.dart';
 import 'package:flutter_node_store/components/custom_textfield.dart';
 import 'package:flutter_node_store/components/rounded_button.dart';
-import 'package:flutter_node_store/utils/app_route.dart';
+import 'package:flutter_node_store/services/rest_api.dart';
+import 'package:flutter_node_store/utils/utility.dart';
 
 class RegisterForm extends StatelessWidget {
   RegisterForm({super.key});
@@ -125,10 +128,51 @@ class RegisterForm extends StatelessWidget {
                       _formKeyRegister.currentState!.save();
 
                       // แสดงข้อมูลที่บันทึกได้ทาง Console
-                      print("First Name: ${_firstNameController.text}");
-                      print("Last Name: ${_lastNameController.text}");
-                      print("Email: ${_emailController.text}");
-                      print("Password: ${_passwordController.text}");
+                      // print("First Name: ${_firstNameController.text}");
+                      // print("Last Name: ${_lastNameController.text}");
+                      // print("Email: ${_emailController.text}");
+                      // print("Password: ${_passwordController.text}");
+
+                      // เรียกใข้งาน API Register
+                      var response = await CallAPI().registerAPI(
+                        {
+                          "firstname": _firstNameController.text,
+                          "lastname": _lastNameController.text,
+                          "email": _emailController.text,
+                          "password": _passwordController.text
+                        }
+                      );
+
+                      var body = jsonDecode(response);
+
+                      Utility().logger.i(body);
+
+                      if(body['message'] == 'No Network Connection'){
+                        // แจ้งเตือนว่าไม่มีการเชื่อมต่อ Internet
+                        Utility.showAlertDialog(
+                          context, 
+                          'แจ้งเตือน', 
+                          body['message']
+                        );
+                      }else{
+                        if(body['status'] == 'ok'){
+                          // แจ้งเตือนว่าลงทะเบียนสำเร็จ
+                          // Utility.showAlertDialog(
+                          //   context, 
+                          //   'แจ้งเตือน', 
+                          //   body['message']
+                          // );
+                          // ส่งกลับไปหน้า Login
+                          Navigator.pushReplacementNamed(context, AppRouter.login);
+                        }else{
+                          // แจ้งเตือนว่าลงทะเบียนไม่สำเร็จ
+                          Utility.showAlertDialog(
+                            context, 
+                            'แจ้งเตือน', 
+                            body['message']
+                          );
+                        }
+                      }
                       
                     }
                   },

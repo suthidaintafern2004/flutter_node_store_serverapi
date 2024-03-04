@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:flutter_node_store/components/mobile_layout.dart';
 import 'package:flutter_node_store/components/responsive_layout.dart';
